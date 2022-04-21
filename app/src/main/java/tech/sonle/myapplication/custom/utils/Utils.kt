@@ -108,62 +108,6 @@ abstract class Utils {
             return r.height()
         }
 
-        private val mFontMetrics = Paint.FontMetrics()
-
-        fun getLineHeight(paint: Paint?): Float {
-            return getLineHeight(
-                paint,
-                mFontMetrics
-            )
-        }
-
-        fun getLineHeight(paint: Paint?, fontMetrics: Paint.FontMetrics): Float {
-            paint?.getFontMetrics(fontMetrics)
-            return fontMetrics.descent - fontMetrics.ascent
-        }
-
-        fun getLineSpacing(paint: Paint): Float {
-            return getLineSpacing(paint, mFontMetrics)
-        }
-
-        fun getLineSpacing(paint: Paint, fontMetrics: Paint.FontMetrics): Float {
-            paint.getFontMetrics(fontMetrics)
-            return fontMetrics.ascent - fontMetrics.top + fontMetrics.bottom
-        }
-
-        /**
-         * Returns a recyclable FSize instance.
-         * calculates the approximate size of a text, depending on a demo text
-         * avoid repeated calls (e.g. inside drawing methods)
-         *
-         * @param paint
-         * @param demoText
-         * @return A Recyclable FSize instance
-         */
-        fun calcTextSize(paint: Paint, demoText: String): FSize? {
-            val result = FSize.getInstance(0F, 0F)
-            calcTextSize(paint, demoText, result)
-            return result
-        }
-
-        private val mCalcTextSizeRect = Rect()
-
-        /**
-         * calculates the approximate size of a text, depending on a demo text
-         * avoid repeated calls (e.g. inside drawing methods)
-         *
-         * @param paint
-         * @param demoText
-         * @param outputFSize An output variable, modified by the function.
-         */
-        fun calcTextSize(paint: Paint, demoText: String, outputFSize: FSize) {
-            val r = mCalcTextSizeRect
-            r[0, 0, 0] = 0
-            paint.getTextBounds(demoText, 0, demoText.length, r)
-            outputFSize.width = r.width().toFloat()
-            outputFSize.height = r.height().toFloat()
-        }
-
         private val mDefaultValueFormatter: IValueFormatter = generateDefaultValueFormatter()
 
         private fun generateDefaultValueFormatter(): IValueFormatter {
@@ -229,31 +173,6 @@ abstract class Utils {
                 roundToNextSignificant(number.toDouble())
             return if (java.lang.Float.isInfinite(i)) 0 else ceil(-log10(i.toDouble()))
                 .toInt() + 2
-        }
-
-        private val mDrawableBoundsCache = Rect()
-
-        fun drawImage(
-            canvas: Canvas,
-            drawable: Drawable,
-            x: Int, y: Int,
-            width: Int, height: Int
-        ) {
-            val drawOffset = MPPointF.getInstance()
-            drawOffset.x = (x - width / 2).toFloat()
-            drawOffset.y = (y - height / 2).toFloat()
-            drawable.copyBounds(mDrawableBoundsCache)
-            drawable.setBounds(
-                mDrawableBoundsCache.left,
-                mDrawableBoundsCache.top,
-                mDrawableBoundsCache.left + width,
-                mDrawableBoundsCache.top + width
-            )
-            val saveId = canvas.save()
-            // translate to the correct position and draw
-            canvas.translate(drawOffset.x, drawOffset.y)
-            drawable.draw(canvas)
-            canvas.restoreToCount(saveId)
         }
     }
 }

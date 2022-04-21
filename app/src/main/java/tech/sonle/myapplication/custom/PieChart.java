@@ -139,9 +139,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
 
         mRenderer.drawValues(canvas);
 
-        drawDescription(canvas);
-
-        drawMarkers(canvas);
+//        drawMarkers(canvas);
     }
 
     @Override

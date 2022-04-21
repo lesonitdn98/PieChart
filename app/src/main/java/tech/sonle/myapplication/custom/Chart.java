@@ -32,7 +32,6 @@ import java.util.ArrayList;
 
 import tech.sonle.myapplication.custom.animation.ChartAnimator;
 import tech.sonle.myapplication.custom.animation.Easing.EasingFunction;
-import tech.sonle.myapplication.custom.components.Description;
 import tech.sonle.myapplication.custom.components.IMarker;
 import tech.sonle.myapplication.custom.components.XAxis;
 import tech.sonle.myapplication.custom.data.ChartData;
@@ -98,12 +97,6 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     protected DefaultValueFormatter mDefaultValueFormatter = new DefaultValueFormatter(0);
 
     /**
-     * paint object used for drawing the description text in the bottom right
-     * corner of the chart
-     */
-    protected Paint mDescPaint;
-
-    /**
      * paint object for drawing the information text when there are no values in
      * the chart
      */
@@ -118,11 +111,6 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * if true, touch gestures are enabled on the chart
      */
     protected boolean mTouchEnabled = true;
-
-    /**
-     * the object responsible for representing the description text
-     */
-    protected Description mDescription;
 
     /**
      * listener that is called when a value on the chart is selected
@@ -211,11 +199,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
         Utils.Companion.init(getContext());
         mMaxHighlightDistance = Utils.Companion.convertDpToPixel(500f);
 
-        mDescription = new Description();
-
         mXAxis = new XAxis();
-
-        mDescPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         mInfoPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mInfoPaint.setColor(Color.rgb(247, 189, 51)); // orange
@@ -377,36 +361,6 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
 
             calculateOffsets();
             mOffsetsCalculated = true;
-        }
-    }
-
-    /**
-     * Draws the description text in the bottom right corner of the chart (per default)
-     */
-    protected void drawDescription(Canvas c) {
-
-        // check if description should be drawn
-        if (mDescription != null && mDescription.isEnabled()) {
-
-            MPPointF position = mDescription.getPosition();
-
-            mDescPaint.setTypeface(mDescription.getTypeface());
-            mDescPaint.setTextSize(mDescription.getTextSize());
-            mDescPaint.setColor(mDescription.getTextColor());
-            mDescPaint.setTextAlign(mDescription.getTextAlign());
-
-            float x, y;
-
-            // if no position specified, draw on default position
-            if (position == null) {
-                x = getWidth() - mViewPortHandler.offsetRight() - mDescription.getXOffset();
-                y = getHeight() - mViewPortHandler.offsetBottom() - mDescription.getYOffset();
-            } else {
-                x = position.x;
-                y = position.y;
-            }
-
-            c.drawText(mDescription.getText(), x, y, mDescPaint);
         }
     }
 
@@ -1233,25 +1187,6 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     }
 
     /**
-     * Sets a new Description object for the chart.
-     *
-     * @param desc
-     */
-    public void setDescription(Description desc) {
-        this.mDescription = desc;
-    }
-
-    /**
-     * Returns the Description object of the chart that is responsible for holding all information related
-     * to the description text that is displayed in the bottom right corner of the chart (by default).
-     *
-     * @return
-     */
-    public Description getDescription() {
-        return mDescription;
-    }
-
-    /**
      * Returns the rectangle that defines the borders of the chart-value surface
      * (into which the actual values are drawn).
      *
@@ -1326,7 +1261,6 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
                 mInfoPaint = p;
                 break;
             case PAINT_DESCRIPTION:
-                mDescPaint = p;
                 break;
         }
     }
@@ -1342,7 +1276,6 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
             case PAINT_INFO:
                 return mInfoPaint;
             case PAINT_DESCRIPTION:
-                return mDescPaint;
         }
 
         return null;

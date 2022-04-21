@@ -103,16 +103,6 @@ public abstract class AxisBase extends ComponentBase {
     private DashPathEffect mGridDashPathEffect = null;
 
     /**
-     * array of limit lines that can be set for the axis
-     */
-    protected List<LimitLine> mLimitLines;
-
-    /**
-     * flag indicating the limit lines layer depth
-     */
-    protected boolean mDrawLimitLineBehindData = false;
-
-    /**
      * flag indicating the grid lines layer depth
      */
     protected boolean mDrawGridLinesBehindData = true;
@@ -192,7 +182,6 @@ public abstract class AxisBase extends ComponentBase {
         this.mTextSize = Utils.Companion.convertDpToPixel(10f);
         this.mXOffset = Utils.Companion.convertDpToPixel(5f);
         this.mYOffset = Utils.Companion.convertDpToPixel(5f);
-        this.mLimitLines = new ArrayList<LimitLine>();
     }
 
     /**
@@ -426,60 +415,6 @@ public abstract class AxisBase extends ComponentBase {
         mGranularity = granularity;
         // set this to true if it was disabled, as it makes no sense to call this method with granularity disabled
         mGranularityEnabled = true;
-    }
-
-    /**
-     * Adds a new LimitLine to this axis.
-     *
-     * @param l
-     */
-    public void addLimitLine(LimitLine l) {
-        mLimitLines.add(l);
-
-        if (mLimitLines.size() > 6) {
-            Log.e("MPAndroiChart",
-                    "Warning! You have more than 6 LimitLines on your axis, do you really want " +
-                            "that?");
-        }
-    }
-
-    /**
-     * Removes the specified LimitLine from the axis.
-     *
-     * @param l
-     */
-    public void removeLimitLine(LimitLine l) {
-        mLimitLines.remove(l);
-    }
-
-    /**
-     * Removes all LimitLines from the axis.
-     */
-    public void removeAllLimitLines() {
-        mLimitLines.clear();
-    }
-
-    /**
-     * Returns the LimitLines of this axis.
-     *
-     * @return
-     */
-    public List<LimitLine> getLimitLines() {
-        return mLimitLines;
-    }
-
-    /**
-     * If this is set to true, the LimitLines are drawn behind the actual data,
-     * otherwise on top. Default: false
-     *
-     * @param enabled
-     */
-    public void setDrawLimitLinesBehindData(boolean enabled) {
-        mDrawLimitLineBehindData = enabled;
-    }
-
-    public boolean isDrawLimitLinesBehindDataEnabled() {
-        return mDrawLimitLineBehindData;
     }
 
     /**

@@ -5,8 +5,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import tech.sonle.myapplication.custom.PieChart
 import tech.sonle.myapplication.custom.animation.Easing
-import tech.sonle.myapplication.custom.components.Description
-import tech.sonle.myapplication.custom.components.IMarker
 import tech.sonle.myapplication.custom.data.Entry
 import tech.sonle.myapplication.custom.data.PieData
 import tech.sonle.myapplication.custom.data.PieDataSet
@@ -32,7 +30,6 @@ class MainActivity : AppCompatActivity(), OnChartValueSelectedListener {
         val chart = findViewById<PieChart>(R.id.chart1)
 
         chart.setUsePercentValues(true)
-        chart.description.isEnabled = false
         chart.setExtraOffsets(5F, 10F, 5F, 5F)
 
         chart.dragDecelerationFrictionCoef = 0.95f

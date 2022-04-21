@@ -14,7 +14,6 @@ import tech.sonle.myapplication.custom.interfaces.datasets.IDataSet
 import tech.sonle.myapplication.custom.utils.Utils
 import tech.sonle.myapplication.custom.utils.ViewPortHandler
 
-
 /**
  * Superclass of all render classes for the different data types (line, bar, ...).
  *

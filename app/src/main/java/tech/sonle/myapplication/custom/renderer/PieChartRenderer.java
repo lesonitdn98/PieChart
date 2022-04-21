@@ -634,23 +634,6 @@ public class PieChartRenderer extends DataRenderer {
                     }
                 }
 
-                if (entry.getIcon() != null && dataSet.isDrawIconsEnabled()) {
-
-                    Drawable icon = entry.getIcon();
-
-                    float x = (labelRadius + iconsOffset.y) * sliceXBase + center.x;
-                    float y = (labelRadius + iconsOffset.y) * sliceYBase + center.y;
-                    y += iconsOffset.x;
-
-                    Utils.Companion.drawImage(
-                            c,
-                            icon,
-                            (int) x,
-                            (int) y,
-                            icon.getIntrinsicWidth(),
-                            icon.getIntrinsicHeight());
-                }
-
                 xIndex++;
             }
 
