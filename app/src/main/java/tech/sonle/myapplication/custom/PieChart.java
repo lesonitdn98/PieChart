@@ -8,7 +8,10 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
+import java.util.List;
+
 import tech.sonle.myapplication.custom.components.XAxis;
+import tech.sonle.myapplication.custom.data.PieData;
 import tech.sonle.myapplication.custom.highlight.Highlight;
 import tech.sonle.myapplication.custom.highlight.PieHighlighter;
 import tech.sonle.myapplication.custom.interfaces.datasets.IPieDataSet;
@@ -16,14 +19,8 @@ import tech.sonle.myapplication.custom.renderer.PieChartRenderer;
 import tech.sonle.myapplication.custom.utils.MPPointF;
 import tech.sonle.myapplication.custom.utils.Utils;
 
-import java.util.List;
-
-import tech.sonle.myapplication.custom.data.PieData;
-
 /**
  * View that represents a pie chart. Draws cake like slices.
- *
- * @author Philipp Jahoda
  */
 public class PieChart extends PieRadarChartBase<PieData> {
 
@@ -69,13 +66,6 @@ public class PieChart extends PieRadarChartBase<PieData> {
     private boolean mDrawRoundedSlices = false;
 
     /**
-     * variable for the text that is drawn in the center of the pie-chart
-     */
-    private CharSequence mCenterText = "";
-
-    private MPPointF mCenterTextOffset = MPPointF.getInstance(0, 0);
-
-    /**
      * indicates the size of the hole in the center of the piechart, default:
      * radius / 2
      */
@@ -85,13 +75,6 @@ public class PieChart extends PieRadarChartBase<PieData> {
      * the radius of the transparent circle next to the chart-hole in the center
      */
     protected float mTransparentCircleRadiusPercent = 55f;
-
-    /**
-     * if enabled, centertext is drawn
-     */
-    private boolean mDrawCenterText = true;
-
-    private float mCenterTextRadiusPercent = 100.f;
 
     protected float mMaxAngle = 360f;
 
@@ -576,24 +559,6 @@ public class PieChart extends PieRadarChartBase<PieData> {
      */
     public boolean isUsePercentValuesEnabled() {
         return mUsePercentValues;
-    }
-
-    /**
-     * the rectangular radius of the bounding box for the center text, as a percentage of the pie
-     * hole
-     * default 1.f (100%)
-     */
-    public void setCenterTextRadiusPercent(float percent) {
-        mCenterTextRadiusPercent = percent;
-    }
-
-    /**
-     * the rectangular radius of the bounding box for the center text, as a percentage of the pie
-     * hole
-     * default 1.f (100%)
-     */
-    public float getCenterTextRadiusPercent() {
-        return mCenterTextRadiusPercent;
     }
 
     public float getMaxAngle() {
