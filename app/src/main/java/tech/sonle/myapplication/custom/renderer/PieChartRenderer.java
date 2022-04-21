@@ -707,7 +707,7 @@ public class PieChartRenderer extends DataRenderer {
     protected RectF mDrawHighlightedRectF = new RectF();
 
     @Override
-    public void drawHighlighted(Canvas c, Highlight[] indices) {
+    public void drawHighlighted(Canvas c, List<? extends Highlight> indices) {
 
         /* Skip entirely if using rounded circle slices, because it doesn't make sense to highlight
          * in this way.

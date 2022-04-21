@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity(), OnChartValueSelectedListener {
         chart.data = data
 
         // undo all highlights
-        chart.highlightValues(null)
+        chart.highlightValues(ArrayList())
         chart.invalidate()
     }
 

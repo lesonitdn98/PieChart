@@ -36,11 +36,6 @@ public abstract class ChartTouchListener<T extends Chart<?>> extends GestureDete
     protected int mTouchMode = NONE;
 
     /**
-     * the last highlighted object (via touch)
-     */
-    protected Highlight mLastHighlighted;
-
-    /**
      * the gesturedetector used for detecting taps and longpresses, ...
      */
     protected GestureDetector mGestureDetector;
@@ -83,15 +78,6 @@ public abstract class ChartTouchListener<T extends Chart<?>> extends GestureDete
     }
 
     /**
-     * Sets the last value that was highlighted via touch.
-     *
-     * @param high
-     */
-    public void setLastHighlighted(Highlight high) {
-        mLastHighlighted = high;
-    }
-
-    /**
      * returns the touch mode the listener is currently in
      *
      * @return
@@ -116,14 +102,7 @@ public abstract class ChartTouchListener<T extends Chart<?>> extends GestureDete
      * @param e
      */
     protected void performHighlight(Highlight h, MotionEvent e) {
-
-        if (h == null || h.equalTo(mLastHighlighted)) {
-            mChart.highlightValue(null, true);
-            mLastHighlighted = null;
-        } else {
-            mChart.highlightValue(h, true);
-            mLastHighlighted = h;
-        }
+        mChart.highlightValue(h, true);
     }
 
     /**

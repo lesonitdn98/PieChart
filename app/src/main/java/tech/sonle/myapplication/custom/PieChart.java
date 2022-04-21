@@ -121,8 +121,6 @@ public class PieChart extends PieRadarChartBase<PieData> {
         mRenderer.drawExtras(canvas);
 
         mRenderer.drawValues(canvas);
-
-//        drawMarkers(canvas);
     }
 
     @Override
@@ -153,39 +151,6 @@ public class PieChart extends PieRadarChartBase<PieData> {
     @Override
     protected void calcMinMax() {
         calcAngles();
-    }
-
-    @Override
-    protected float[] getMarkerPosition(Highlight highlight) {
-
-        MPPointF center = getCenterCircleBox();
-        float r = getRadius();
-
-        float off = r / 10f * 3.6f;
-
-        if (isDrawHoleEnabled()) {
-            off = (r - (r / 100f * getHoleRadius())) / 2f;
-        }
-
-        r -= off; // offset to keep things inside the chart
-
-        float rotationAngle = getRotationAngle();
-
-        int entryIndex = (int) highlight.getX();
-
-        // offset needed to center the drawn text in the slice
-        float offset = mDrawAngles[entryIndex] / 2;
-
-        // calculate the text position
-        float x = (float) (r
-                * Math.cos(Math.toRadians((rotationAngle + mAbsoluteAngles[entryIndex] - offset)
-                * mAnimator.getPhaseY())) + center.x);
-        float y = (float) (r
-                * Math.sin(Math.toRadians((rotationAngle + mAbsoluteAngles[entryIndex] - offset)
-                * mAnimator.getPhaseY())) + center.y);
-
-        MPPointF.recycleInstance(center);
-        return new float[]{x, y};
     }
 
     /**

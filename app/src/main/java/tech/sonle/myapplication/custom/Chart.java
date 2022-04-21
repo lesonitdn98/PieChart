@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import tech.sonle.myapplication.custom.animation.ChartAnimator;
 import tech.sonle.myapplication.custom.animation.Easing.EasingFunction;
@@ -248,7 +249,6 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
         mData = null;
         mOffsetsCalculated = false;
         mIndicesToHighlight = null;
-        mChartTouchListener.setLastHighlighted(null);
         invalidate();
     }
 
@@ -373,7 +373,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * array of Highlight objects that reference the highlighted slices in the
      * chart
      */
-    protected Highlight[] mIndicesToHighlight;
+    protected List<Highlight> mIndicesToHighlight = new ArrayList();
 
     /**
      * The maximum distance in dp away from an entry causing it to highlight.
@@ -401,7 +401,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      *
      * @return
      */
-    public Highlight[] getHighlighted() {
+    public List<Highlight> getHighlighted() {
         return mIndicesToHighlight;
     }
 
@@ -432,20 +432,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * @return
      */
     public boolean valuesToHighlight() {
-        return mIndicesToHighlight != null && mIndicesToHighlight.length > 0;
-    }
-
-    /**
-     * Sets the last highlighted value for the touchlistener.
-     *
-     * @param highs
-     */
-    protected void setLastHighlighted(Highlight[] highs) {
-        if (highs == null || highs.length <= 0 || highs[0] == null) {
-            mChartTouchListener.setLastHighlighted(null);
-        } else {
-            mChartTouchListener.setLastHighlighted(highs[0]);
-        }
+        return mIndicesToHighlight != null && mIndicesToHighlight.size() > 0;
     }
 
     /**
@@ -456,12 +443,10 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      *
      * @param highs
      */
-    public void highlightValues(Highlight[] highs) {
+    public void highlightValues(List<Highlight> highs) {
 
         // set the indices to highlight
         mIndicesToHighlight = highs;
-
-        setLastHighlighted(highs);
 
         // redraw the chart
         invalidate();
@@ -599,25 +584,27 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
         Entry e = null;
 
         if (high == null) {
-            mIndicesToHighlight = null;
+            mIndicesToHighlight.clear();
         } else {
-            if (mLogEnabled)
-                Log.i(LOG_TAG, "Highlighted: " + high.toString());
-
             e = mData.getEntryForHighlight(high);
             if (e == null) {
-                mIndicesToHighlight = null;
+                mIndicesToHighlight.clear();
                 high = null;
             } else {
-
+                List<Highlight> indicesToHighlightUpdate = new ArrayList();
+                boolean isRemove = false;
                 // set the indices to highlight
-                mIndicesToHighlight = new Highlight[]{
-                        high
-                };
+                for (Highlight h : mIndicesToHighlight) {
+                    if (!high.equalTo(h))
+                        indicesToHighlightUpdate.add(h);
+                    else isRemove = true;
+                }
+
+                if (isRemove)
+                    mIndicesToHighlight = indicesToHighlightUpdate;
+                else mIndicesToHighlight.add(high);
             }
         }
-
-        setLastHighlighted(mIndicesToHighlight);
 
         if (callListener && mSelectionListener != null) {
             if (!valuesToHighlight())
@@ -675,61 +662,9 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     /** BELOW CODE IS FOR THE MARKER VIEW */
 
     /**
-     * if set to true, the marker view is drawn when a value is clicked
-     */
-    protected boolean mDrawMarkers = true;
-
-    /**
      * the view that represents the marker
      */
     protected IMarker mMarker;
-
-    /**
-     * draws all MarkerViews on the highlighted positions
-     */
-    protected void drawMarkers(Canvas canvas) {
-
-        // if there is no marker view or drawing marker is disabled
-        if (mMarker == null || !isDrawMarkersEnabled() || !valuesToHighlight())
-            return;
-
-        for (int i = 0; i < mIndicesToHighlight.length; i++) {
-
-            Highlight highlight = mIndicesToHighlight[i];
-
-            IDataSet set = mData.getDataSetByIndex(highlight.getDataSetIndex());
-
-            Entry e = mData.getEntryForHighlight(mIndicesToHighlight[i]);
-            int entryIndex = set.getEntryIndex(e);
-
-            // make sure entry not null
-            if (e == null || entryIndex > set.getEntryCount() * mAnimator.getPhaseX())
-                continue;
-
-            float[] pos = getMarkerPosition(highlight);
-
-            // check bounds
-            if (!mViewPortHandler.isInBounds(pos[0], pos[1]))
-                continue;
-
-            // callbacks to update the content
-            mMarker.refreshContent(e, highlight);
-
-            // draw the marker
-            mMarker.draw(canvas, pos[0], pos[1]);
-        }
-    }
-
-    /**
-     * Returns the actual position in pixels of the MarkerView for the given
-     * Highlight object.
-     *
-     * @param high
-     * @return
-     */
-    protected float[] getMarkerPosition(Highlight high) {
-        return new float[]{high.getDrawX(), high.getDrawY()};
-    }
 
     /**
      * ################ ################ ################ ################
@@ -1277,37 +1212,6 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
         }
 
         return null;
-    }
-
-    @Deprecated
-    public boolean isDrawMarkerViewsEnabled() {
-        return isDrawMarkersEnabled();
-    }
-
-    @Deprecated
-    public void setDrawMarkerViews(boolean enabled) {
-        setDrawMarkers(enabled);
-    }
-
-    /**
-     * returns true if drawing the marker is enabled when tapping on values
-     * (use the setMarker(IMarker marker) method to specify a marker)
-     *
-     * @return
-     */
-    public boolean isDrawMarkersEnabled() {
-        return mDrawMarkers;
-    }
-
-    /**
-     * Set this to true to draw a user specified marker when tapping on
-     * chart values (use the setMarker(IMarker marker) method to specify a
-     * marker). Default: true
-     *
-     * @param enabled
-     */
-    public void setDrawMarkers(boolean enabled) {
-        mDrawMarkers = enabled;
     }
 
     /**
