@@ -116,7 +116,6 @@ public class PieChartRenderer extends DataRenderer {
 
     @Override
     public void drawData(Canvas c) {
-
         int width = (int) getMViewPortHandler().getChartWidth();
         int height = (int) getMViewPortHandler().getChartHeight();
 
@@ -509,128 +508,129 @@ public class PieChartRenderer extends DataRenderer {
                 final boolean drawYInside = drawValues &&
                         yValuePosition == PieDataSet.ValuePosition.INSIDE_SLICE;
 
-                if (drawXOutside || drawYOutside) {
+                if (mChart.needsHighlight(j)) {
+                    if (drawXOutside || drawYOutside) {
 
-                    final float valueLineLength1 = dataSet.getValueLinePart1Length();
-                    final float valueLineLength2 = dataSet.getValueLinePart2Length();
-                    final float valueLinePart1OffsetPercentage = dataSet.getValueLinePart1OffsetPercentage() / 100.f;
+                        final float valueLineLength1 = dataSet.getValueLinePart1Length();
+                        final float valueLineLength2 = dataSet.getValueLinePart2Length();
+                        final float valueLinePart1OffsetPercentage = dataSet.getValueLinePart1OffsetPercentage() / 100.f;
 
-                    float pt2x, pt2y;
-                    float labelPtx, labelPty;
+                        float pt2x, pt2y;
+                        float labelPtx, labelPty;
 
-                    float line1Radius;
+                        float line1Radius;
 
-                    if (mChart.isDrawHoleEnabled())
-                        line1Radius = (radius - (radius * holeRadiusPercent))
-                                * valueLinePart1OffsetPercentage
-                                + (radius * holeRadiusPercent);
-                    else
-                        line1Radius = radius * valueLinePart1OffsetPercentage;
+                        if (mChart.isDrawHoleEnabled())
+                            line1Radius = (radius - (radius * holeRadiusPercent))
+                                    * valueLinePart1OffsetPercentage
+                                    + (radius * holeRadiusPercent);
+                        else
+                            line1Radius = radius * valueLinePart1OffsetPercentage;
 
-                    final float polyline2Width = dataSet.isValueLineVariableLength()
-                            ? labelRadius * valueLineLength2 * (float) Math.abs(Math.sin(
-                            transformedAngle * Utils.FDEG2RAD))
-                            : labelRadius * valueLineLength2;
+                        final float polyline2Width = dataSet.isValueLineVariableLength()
+                                ? labelRadius * valueLineLength2 * (float) Math.abs(Math.sin(
+                                transformedAngle * Utils.FDEG2RAD))
+                                : labelRadius * valueLineLength2;
 
-                    final float pt0x = line1Radius * sliceXBase + center.x;
-                    final float pt0y = line1Radius * sliceYBase + center.y;
+                        final float pt0x = line1Radius * sliceXBase + center.x;
+                        final float pt0y = line1Radius * sliceYBase + center.y;
 
-                    final float pt1x = labelRadius * (1 + valueLineLength1) * sliceXBase + center.x;
-                    final float pt1y = labelRadius * (1 + valueLineLength1) * sliceYBase + center.y;
+                        final float pt1x = labelRadius * (1 + valueLineLength1) * sliceXBase + center.x;
+                        final float pt1y = labelRadius * (1 + valueLineLength1) * sliceYBase + center.y;
 
-                    if (transformedAngle % 360.0 >= 90.0 && transformedAngle % 360.0 <= 270.0) {
-                        pt2x = pt1x - polyline2Width;
-                        pt2y = pt1y;
+                        if (transformedAngle % 360.0 >= 90.0 && transformedAngle % 360.0 <= 270.0) {
+                            pt2x = pt1x - polyline2Width;
+                            pt2y = pt1y;
 
-                        getMValuePaint().setTextAlign(Align.RIGHT);
+                            getMValuePaint().setTextAlign(Align.RIGHT);
 
-                        if (drawXOutside)
-                            mEntryLabelsPaint.setTextAlign(Align.RIGHT);
+                            if (drawXOutside)
+                                mEntryLabelsPaint.setTextAlign(Align.RIGHT);
 
-                        labelPtx = pt2x - offset;
+                            labelPtx = pt2x - offset;
+                        } else {
+                            pt2x = pt1x + polyline2Width;
+                            pt2y = pt1y;
+                            getMValuePaint().setTextAlign(Align.LEFT);
+
+                            if (drawXOutside)
+                                mEntryLabelsPaint.setTextAlign(Align.LEFT);
+
+                            labelPtx = pt2x + offset;
+                        }
                         labelPty = pt2y;
-                    } else {
-                        pt2x = pt1x + polyline2Width;
-                        pt2y = pt1y;
-                        getMValuePaint().setTextAlign(Align.LEFT);
 
-                        if (drawXOutside)
-                            mEntryLabelsPaint.setTextAlign(Align.LEFT);
+                        int lineColor = ColorTemplate.COLOR_NONE;
 
-                        labelPtx = pt2x + offset;
-                        labelPty = pt2y;
-                    }
+                        if (isUseValueColorForLineEnabled)
+                            lineColor = dataSet.getColor(j);
+                        else if (valueLineColor != ColorTemplate.COLOR_NONE)
+                            lineColor = valueLineColor;
 
-                    int lineColor = ColorTemplate.COLOR_NONE;
-
-                    if (isUseValueColorForLineEnabled)
-                        lineColor = dataSet.getColor(j);
-                    else if (valueLineColor != ColorTemplate.COLOR_NONE)
-                        lineColor = valueLineColor;
-
-                    if (lineColor != ColorTemplate.COLOR_NONE) {
-                        mValueLinePaint.setColor(lineColor);
-                        // TODO draw outline value with line
+                        if (lineColor != ColorTemplate.COLOR_NONE) {
+                            mValueLinePaint.setColor(lineColor);
+                            // TODO draw outline value with line
 //                        c.drawLine(pt0x, pt0y, pt1x, pt1y, mValueLinePaint);
 //                        c.drawLine(pt1x, pt1y, pt2x, pt2y, mValueLinePaint);
+                        }
+
+                        // draw everything, depending on settings
+                        if (drawXOutside && drawYOutside) {
+                            if (j < data.getEntryCount() && entryLabel != null) {
+                                drawValueWithLabel(c,
+                                        entryLabel,
+                                        formatter,
+                                        value,
+                                        entry,
+                                        0,
+                                        pt0x,
+                                        pt0y,
+                                        dataSet.getValueTextColor(j));
+                            } else {
+                                drawValue(c,
+                                        formatter,
+                                        value,
+                                        entry,
+                                        0,
+                                        pt0x,
+                                        pt0y,
+                                        dataSet.getValueTextColor(j));
+                            }
+
+                        } else if (drawXOutside) {
+                            if (j < data.getEntryCount() && entryLabel != null) {
+                                drawEntryLabel(c, entryLabel, labelPtx, labelPty + lineHeight / 2.f);
+                            }
+                        } else if (drawYOutside) {
+                            drawValue(c, formatter, value, entry, 0, labelPtx, labelPty + lineHeight / 2.f, dataSet
+                                    .getValueTextColor(j));
+                        }
                     }
 
-                    // draw everything, depending on settings
-                    if (drawXOutside && drawYOutside) {
-                        if (j < data.getEntryCount() && entryLabel != null) {
-                            drawValueWithLabel(c,
-                                    entryLabel,
-                                    formatter,
-                                    value,
-                                    entry,
-                                    0,
-                                    pt0x,
-                                    pt0y,
-                                    dataSet.getValueTextColor(j));
-                        } else {
-                            drawValue(c,
-                                    formatter,
-                                    value,
-                                    entry,
-                                    0,
-                                    pt0x,
-                                    pt0y,
-                                    dataSet.getValueTextColor(j));
+                    if (drawXInside || drawYInside) {
+                        // calculate the text position
+                        float x = labelRadius * sliceXBase + center.x;
+                        float y = labelRadius * sliceYBase + center.y;
+
+                        getMValuePaint().setTextAlign(Align.CENTER);
+
+                        // draw everything, depending on settings
+                        if (drawXInside && drawYInside) {
+
+                            drawValue(c, formatter, value, entry, 0, x, y, dataSet.getValueTextColor(j));
+
+                            if (j < data.getEntryCount() && entryLabel != null) {
+                                drawEntryLabel(c, entryLabel, x, y + lineHeight);
+                            }
+
+                        } else if (drawXInside) {
+                            if (j < data.getEntryCount() && entryLabel != null) {
+                                drawEntryLabel(c, entryLabel, x, y + lineHeight / 2f);
+                            }
+                        } else if (drawYInside) {
+
+                            drawValue(c, formatter, value, entry, 0, x, y + lineHeight / 2f, dataSet.getValueTextColor(j));
                         }
-
-                    } else if (drawXOutside) {
-                        if (j < data.getEntryCount() && entryLabel != null) {
-                            drawEntryLabel(c, entryLabel, labelPtx, labelPty + lineHeight / 2.f);
-                        }
-                    } else if (drawYOutside) {
-                        drawValue(c, formatter, value, entry, 0, labelPtx, labelPty + lineHeight / 2.f, dataSet
-                                .getValueTextColor(j));
-                    }
-                }
-
-                if (drawXInside || drawYInside) {
-                    // calculate the text position
-                    float x = labelRadius * sliceXBase + center.x;
-                    float y = labelRadius * sliceYBase + center.y;
-
-                    getMValuePaint().setTextAlign(Align.CENTER);
-
-                    // draw everything, depending on settings
-                    if (drawXInside && drawYInside) {
-
-                        drawValue(c, formatter, value, entry, 0, x, y, dataSet.getValueTextColor(j));
-
-                        if (j < data.getEntryCount() && entryLabel != null) {
-                            drawEntryLabel(c, entryLabel, x, y + lineHeight);
-                        }
-
-                    } else if (drawXInside) {
-                        if (j < data.getEntryCount() && entryLabel != null) {
-                            drawEntryLabel(c, entryLabel, x, y + lineHeight / 2f);
-                        }
-                    } else if (drawYInside) {
-
-                        drawValue(c, formatter, value, entry, 0, x, y + lineHeight / 2f, dataSet.getValueTextColor(j));
                     }
                 }
 
