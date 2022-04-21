@@ -1,10 +1,7 @@
 package tech.sonle.myapplication.custom.renderer
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.graphics.Paint.Align
-import android.graphics.Typeface
 import tech.sonle.myapplication.custom.animation.ChartAnimator
 import tech.sonle.myapplication.custom.data.Entry
 import tech.sonle.myapplication.custom.formatter.IValueFormatter
@@ -44,16 +41,20 @@ abstract class DataRenderer(
      * paint object for drawing values (text representing values of chart
      * entries)
      */
-    protected var mValuePaint: Paint? = null
+    protected var mValuePaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    companion object {
+        const val STROKE_WIDTH = 16F
+    }
 
     init {
         mRenderPaint = Paint(Paint.ANTI_ALIAS_FLAG)
         mRenderPaint!!.style = Paint.Style.FILL
         mDrawPaint = Paint(Paint.DITHER_FLAG)
         mValuePaint = Paint(Paint.ANTI_ALIAS_FLAG)
-        mValuePaint!!.color = Color.rgb(63, 63, 63)
-        mValuePaint!!.textAlign = Align.CENTER
-        mValuePaint!!.textSize = Utils.convertDpToPixel(9f)
+        mValuePaint.color = Color.rgb(63, 63, 63)
+        mValuePaint.textAlign = Align.CENTER
+        mValuePaint.textSize = Utils.convertDpToPixel(14f)
         mHighlightPaint = Paint(Paint.ANTI_ALIAS_FLAG)
         mHighlightPaint!!.style = Paint.Style.STROKE
         mHighlightPaint!!.strokeWidth = 2f
@@ -100,8 +101,8 @@ abstract class DataRenderer(
      * @param set
      */
     protected open fun applyValueTextStyle(set: IDataSet<Entry>) {
-        mValuePaint!!.typeface = set.valueTypeface
-        mValuePaint!!.textSize = set.valueTextSize
+        mValuePaint.typeface = set.valueTypeface
+        mValuePaint.textSize = set.valueTextSize
     }
 
     /**
@@ -155,7 +156,7 @@ abstract class DataRenderer(
         strokePaint.style = Paint.Style.STROKE
         strokePaint.strokeWidth = 2f
 
-        mValuePaint!!.color = color
+        mValuePaint.color = color
 
         c.drawText(
             formatter.getFormattedValue(value, entry, dataSetIndex, mViewPortHandler), x, y,
@@ -163,7 +164,7 @@ abstract class DataRenderer(
         )
         c.drawText(
             formatter.getFormattedValue(value, entry, dataSetIndex, mViewPortHandler), x, y,
-            mValuePaint!!
+            mValuePaint
         )
     }
 
@@ -191,13 +192,105 @@ abstract class DataRenderer(
         y: Float,
         color: Int
     ) {
-        mValuePaint!!.color = color
-        c.drawText(
-            "$label: ${formatter.getFormattedValue(value, entry, dataSetIndex, mViewPortHandler)}",
-            x,
-            y,
-            mValuePaint!!
+        val textContent =
+            "$label: ${formatter.getFormattedValue(value, entry, dataSetIndex, mViewPortHandler)}%"
+
+        val bgPaint = Paint()
+        bgPaint.color = Color.BLUE
+
+        val lineHeight = mValuePaint.textSize + 2 * STROKE_WIDTH
+        val textWidth = mValuePaint.measureText(textContent)
+
+        c.drawPath(
+            getPathOfRoundedRectF(
+                RectF(
+                    x - STROKE_WIDTH,
+                    y - (lineHeight - STROKE_WIDTH), x + textWidth + STROKE_WIDTH,
+                    (y + 1.5 * STROKE_WIDTH).toFloat()
+                ),
+                32F,
+                32F,
+                32F,
+                32F
+            ),
+            bgPaint
         )
+
+        mValuePaint.color = color
+        c.drawText(textContent, x, y, mValuePaint)
+    }
+
+    private fun getPathOfRoundedRectF(
+        rect: RectF,
+        topLeftRadius: Float = 0f,
+        topRightRadius: Float = 0f,
+        bottomRightRadius: Float = 0f,
+        bottomLeftRadius: Float = 0f
+    ): Path {
+        val tlRadius = topLeftRadius.coerceAtLeast(0f)
+        val trRadius = topRightRadius.coerceAtLeast(0f)
+        val brRadius = bottomRightRadius.coerceAtLeast(0f)
+        val blRadius = bottomLeftRadius.coerceAtLeast(0f)
+
+        with(Path()) {
+            moveTo(rect.left + tlRadius, rect.top)
+
+            //setup top border
+            lineTo(rect.right - trRadius, rect.top)
+
+            //setup top-right corner
+            arcTo(
+                RectF(
+                    rect.right - trRadius * 2f,
+                    rect.top,
+                    rect.right,
+                    rect.top + trRadius * 2f
+                ), -90f, 90f
+            )
+
+            //setup right border
+            lineTo(rect.right, rect.bottom - trRadius)
+
+            //setup bottom-right corner
+            arcTo(
+                RectF(
+                    rect.right - brRadius * 2f,
+                    rect.bottom - brRadius * 2f,
+                    rect.right,
+                    rect.bottom
+                ), 0f, 90f
+            )
+
+            //setup bottom border
+            lineTo(rect.left + blRadius, rect.bottom)
+
+            //setup bottom-left corner
+            arcTo(
+                RectF(
+                    rect.left,
+                    rect.bottom - blRadius * 2f,
+                    rect.left + blRadius * 2f,
+                    rect.bottom
+                ), 90f, 90f
+            )
+
+            //setup left border
+            lineTo(rect.left, rect.top + tlRadius)
+
+            //setup top-left corner
+            arcTo(
+                RectF(
+                    rect.left,
+                    rect.top,
+                    rect.left + tlRadius * 2f,
+                    rect.top + tlRadius * 2f
+                ),
+                180f,
+                90f
+            )
+            close()
+            return this
+        }
     }
 
     /**
