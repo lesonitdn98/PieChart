@@ -7,13 +7,9 @@ import tech.sonle.myapplication.custom.utils.ViewPortHandler
  *
  * Create by SonLe on 19/04/2022
  */
-abstract class Renderer {
+abstract class Renderer(viewPortHandler: ViewPortHandler) {
     /**
      * the component that handles the drawing area of the chart and it's offsets
      */
-    protected var mViewPortHandler: ViewPortHandler? = null
-
-    open fun Renderer(viewPortHandler: ViewPortHandler?) {
-        mViewPortHandler = viewPortHandler
-    }
+    protected var mViewPortHandler: ViewPortHandler = viewPortHandler
 }

@@ -7,11 +7,8 @@ import android.graphics.RectF;
 
 import java.util.List;
 
-import tech.sonle.myapplication.custom.data.CandleEntry;
 import tech.sonle.myapplication.custom.data.Entry;
 import tech.sonle.myapplication.custom.interfaces.datasets.IBubbleDataSet;
-import tech.sonle.myapplication.custom.interfaces.datasets.ICandleDataSet;
-import tech.sonle.myapplication.custom.interfaces.datasets.ILineDataSet;
 
 /**
  * Transformer class that contains all matrices and is responsible for

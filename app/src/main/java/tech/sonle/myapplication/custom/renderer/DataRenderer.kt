@@ -19,11 +19,14 @@ import tech.sonle.myapplication.custom.utils.ViewPortHandler
  *
  * Create by SonLe on 19/04/2022
  */
-abstract class DataRenderer : Renderer() {
+abstract class DataRenderer(
+    animator: ChartAnimator?,
+    viewPortHandler: ViewPortHandler
+) : Renderer(viewPortHandler) {
     /**
      * the animator object used to perform animations on the chart data
      */
-    protected var mAnimator: ChartAnimator? = null
+    protected var mAnimator: ChartAnimator? = animator
 
     /**
      * main paint object used for rendering
@@ -33,9 +36,9 @@ abstract class DataRenderer : Renderer() {
     /**
      * paint used for highlighting values
      */
-    protected var mHighlightPaint: Paint? = null
+    private var mHighlightPaint: Paint? = null
 
-    protected var mDrawPaint: Paint? = null
+    private var mDrawPaint: Paint? = null
 
     /**
      * paint object for drawing values (text representing values of chart
@@ -43,9 +46,7 @@ abstract class DataRenderer : Renderer() {
      */
     protected var mValuePaint: Paint? = null
 
-    open fun DataRenderer(animator: ChartAnimator?, viewPortHandler: ViewPortHandler?) {
-        super.Renderer(viewPortHandler)
-        mAnimator = animator
+    init {
         mRenderPaint = Paint(Paint.ANTI_ALIAS_FLAG)
         mRenderPaint!!.style = Paint.Style.FILL
         mDrawPaint = Paint(Paint.DITHER_FLAG)
@@ -60,7 +61,7 @@ abstract class DataRenderer : Renderer() {
     }
 
     protected open fun isDrawingValuesAllowed(chart: ChartInterface): Boolean {
-        return chart.data.entryCount < chart.maxVisibleCount * mViewPortHandler!!.getScaleX()
+        return chart.data.entryCount < chart.maxVisibleCount * mViewPortHandler.getScaleX()
     }
 
     /**

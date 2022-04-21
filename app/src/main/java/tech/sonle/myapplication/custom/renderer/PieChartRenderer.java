@@ -64,7 +64,7 @@ public class PieChartRenderer extends DataRenderer {
 
     public PieChartRenderer(PieChart chart, ChartAnimator animator,
                             ViewPortHandler viewPortHandler) {
-        super.DataRenderer(animator, viewPortHandler);
+        super(animator, viewPortHandler);
         mChart = chart;
 
         mHolePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
