@@ -2,12 +2,14 @@ package tech.sonle.myapplication.custom.renderer
 
 import android.graphics.*
 import android.graphics.Paint.Align
+import androidx.core.content.ContextCompat
 import tech.sonle.myapplication.custom.animation.ChartAnimator
 import tech.sonle.myapplication.custom.data.Entry
 import tech.sonle.myapplication.custom.formatter.IValueFormatter
 import tech.sonle.myapplication.custom.highlight.Highlight
 import tech.sonle.myapplication.custom.interfaces.dataprovider.ChartInterface
 import tech.sonle.myapplication.custom.interfaces.datasets.IDataSet
+import tech.sonle.myapplication.custom.utils.MPPointF
 import tech.sonle.myapplication.custom.utils.Utils
 import tech.sonle.myapplication.custom.utils.ViewPortHandler
 
@@ -190,13 +192,18 @@ abstract class DataRenderer(
         dataSetIndex: Int,
         x: Float,
         y: Float,
-        color: Int
+        color: Int,
+        shadowColor: Int?,
+        center: MPPointF
     ) {
         val textContent =
             "$label: ${formatter.getFormattedValue(value, entry, dataSetIndex, mViewPortHandler)}%"
 
         val bgPaint = Paint()
-        bgPaint.color = Color.BLUE
+        bgPaint.color = Color.WHITE
+        shadowColor?.let {
+            bgPaint.setShadowLayer(10F, 0F, 3F, it)
+        }
 
         val lineHeight = mValuePaint.textSize + 2 * STROKE_WIDTH
         val textWidth = mValuePaint.measureText(textContent)
@@ -204,8 +211,9 @@ abstract class DataRenderer(
         c.drawPath(
             getPathOfRoundedRectF(
                 RectF(
-                    x - STROKE_WIDTH,
-                    y - (lineHeight - STROKE_WIDTH), x + textWidth + STROKE_WIDTH,
+                    if (x < center.x) x - STROKE_WIDTH - textWidth else x - STROKE_WIDTH,
+                    y - (lineHeight - STROKE_WIDTH),
+                    if (x < center.x) x + STROKE_WIDTH else x + STROKE_WIDTH + textWidth,
                     (y + 1.5 * STROKE_WIDTH).toFloat()
                 ),
                 32F,

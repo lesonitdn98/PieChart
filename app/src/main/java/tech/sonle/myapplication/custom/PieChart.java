@@ -132,7 +132,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
             return;
 
         float diameter = getDiameter();
-        float radius = diameter / 2.5f;
+        float radius = diameter / 3f;
 
         MPPointF c = getCenterOffsets();
 

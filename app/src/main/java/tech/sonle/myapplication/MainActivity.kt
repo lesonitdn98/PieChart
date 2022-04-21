@@ -3,6 +3,7 @@ package tech.sonle.myapplication
 import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import tech.sonle.myapplication.custom.PieChart
 import tech.sonle.myapplication.custom.animation.Easing
 import tech.sonle.myapplication.custom.data.Entry
@@ -48,6 +49,8 @@ class MainActivity : AppCompatActivity(), OnChartValueSelectedListener {
         // enable rotation of the chart by touch
         chart.isRotationEnabled = true
         chart.isHighlightPerTapEnabled = true
+
+        chart.labelShadowColor = ContextCompat.getColor(this, R.color.dove_gray)
 
         chart.setOnChartValueSelectedListener(this)
 
@@ -100,7 +103,7 @@ class MainActivity : AppCompatActivity(), OnChartValueSelectedListener {
         val data = PieData(dataSet)
 //        data.setValueFormatter(PercentFormatter())
         data.setValueTextSize(11f)
-        data.setValueTextColor(Color.WHITE)
+        data.setValueTextColor(ContextCompat.getColor(this, R.color.tory_blue))
 //        data.setValueTypeface(tfLight)
         chart.data = data
 

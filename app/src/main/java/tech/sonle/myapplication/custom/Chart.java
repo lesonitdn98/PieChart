@@ -63,6 +63,8 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
 
     public static final String LOG_TAG = "MPAndroidChart";
 
+    public Integer labelShadowColor;
+
     /**
      * flag that indicates if logging is enabled or not
      */
