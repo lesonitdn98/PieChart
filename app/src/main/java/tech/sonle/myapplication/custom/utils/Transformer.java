@@ -7,9 +7,6 @@ import android.graphics.RectF;
 
 import java.util.List;
 
-import tech.sonle.myapplication.custom.data.Entry;
-import tech.sonle.myapplication.custom.interfaces.datasets.IBubbleDataSet;
-
 /**
  * Transformer class that contains all matrices and is responsible for
  * transforming values into pixels on the screen and backwards.
@@ -87,47 +84,12 @@ public class Transformer {
     protected float[] valuePointsForGenerateTransformedValuesBubble = new float[1];
 
     /**
-     * Transforms an List of Entry into a float array containing the x and
-     * y values transformed with all matrices for the BUBBLECHART.
-     *
-     * @param data
-     * @return
-     */
-    public float[] generateTransformedValuesBubble(IBubbleDataSet data, float phaseY, int from, int to) {
-
-        final int count = (to - from + 1) * 2; // (int) Math.ceil((to - from) * phaseX) * 2;
-
-        if (valuePointsForGenerateTransformedValuesBubble.length != count) {
-            valuePointsForGenerateTransformedValuesBubble = new float[count];
-        }
-        float[] valuePoints = valuePointsForGenerateTransformedValuesBubble;
-
-        for (int j = 0; j < count; j += 2) {
-
-            Entry e = data.getEntryForIndex(j / 2 + from);
-
-            if (e != null) {
-                valuePoints[j] = e.getX();
-                valuePoints[j + 1] = e.getY() * phaseY;
-            } else {
-                valuePoints[j] = 0;
-                valuePoints[j + 1] = 0;
-            }
-        }
-
-        getValueToPixelMatrix().mapPoints(valuePoints);
-
-        return valuePoints;
-    }
-
-    /**
      * transform a path with all the given matrices VERY IMPORTANT: keep order
      * to value-touch-offset
      *
      * @param path
      */
     public void pathValueToPixel(Path path) {
-
         path.transform(mMatrixValueToPx);
         path.transform(mViewPortHandler.getMatrixTouch());
         path.transform(mMatrixOffset);
