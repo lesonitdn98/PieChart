@@ -17,12 +17,7 @@ import tech.sonle.myapplication.custom.utils.MPPointF
 
 class MainActivity : AppCompatActivity(), OnChartValueSelectedListener {
 
-    var parties = arrayOf(
-        "Party A", "Party B", "Party C", "Party D", "Party E", "Party F", "Party G", "Party H",
-        "Party I", "Party J", "Party K", "Party L", "Party M", "Party N", "Party O", "Party P",
-        "Party Q", "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X",
-        "Party Y", "Party Z"
-    )
+    var parties = arrayOf("Cardboard", "Paper", "Plastic", "Metal", "Aluminium", "Beverage carton", "Polystyrene", "Fabric", "Light bulb", "Glass")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +53,7 @@ class MainActivity : AppCompatActivity(), OnChartValueSelectedListener {
         chart.setEntryLabelColor(Color.WHITE)
         chart.setEntryLabelTextSize(12f)
 
-        setData(chart, 5, 5F)
+        setData(chart, 10, 5F)
     }
 
     private fun setData(chart: PieChart, count: Int, range: Float) {
@@ -70,8 +65,7 @@ class MainActivity : AppCompatActivity(), OnChartValueSelectedListener {
             entries.add(
                 PieEntry(
                     (Math.random() * range + range / 5).toFloat(),
-                    parties[i % parties.size],
-                    resources.getDrawable(R.drawable.ic_launcher_background)
+                    parties[i % parties.size]
                 )
             )
         }

@@ -2,7 +2,6 @@ package tech.sonle.myapplication.custom.renderer
 
 import android.graphics.*
 import android.graphics.Paint.Align
-import androidx.core.content.ContextCompat
 import tech.sonle.myapplication.custom.animation.ChartAnimator
 import tech.sonle.myapplication.custom.data.Entry
 import tech.sonle.myapplication.custom.formatter.IValueFormatter
@@ -208,12 +207,28 @@ abstract class DataRenderer(
         val lineHeight = mValuePaint.textSize + 2 * STROKE_WIDTH
         val textWidth = mValuePaint.measureText(textContent)
 
+        var left = if (x < center.x) x - STROKE_WIDTH - textWidth else x - STROKE_WIDTH
+        var right = if (x < center.x) x + STROKE_WIDTH else x + STROKE_WIDTH + textWidth
+
+        var newX = x
+        if (left < 0) {
+            newX -= left
+            right -= left
+            left -= left
+        }
+
+        if (right > 2 * center.x) {
+            newX -= (right - 2 * center.x)
+            left -= (right - 2 * center.x)
+            right -= (right - 2 * center.x)
+        }
+
         c.drawPath(
             getPathOfRoundedRectF(
                 RectF(
-                    if (x < center.x) x - STROKE_WIDTH - textWidth else x - STROKE_WIDTH,
+                    left,
                     y - (lineHeight - STROKE_WIDTH),
-                    if (x < center.x) x + STROKE_WIDTH else x + STROKE_WIDTH + textWidth,
+                    right,
                     (y + 1.5 * STROKE_WIDTH).toFloat()
                 ),
                 32F,
@@ -225,7 +240,7 @@ abstract class DataRenderer(
         )
 
         mValuePaint.color = color
-        c.drawText(textContent, x, y, mValuePaint)
+        c.drawText(textContent, newX, y, mValuePaint)
     }
 
     private fun getPathOfRoundedRectF(
