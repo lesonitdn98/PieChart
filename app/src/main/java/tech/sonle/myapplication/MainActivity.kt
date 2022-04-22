@@ -53,37 +53,33 @@ class MainActivity : AppCompatActivity(), OnChartValueSelectedListener {
         chart.setEntryLabelColor(Color.WHITE)
         chart.setEntryLabelTextSize(12f)
 
-        setData(chart, 10, 5F)
+        setData(chart, 2, 5F)
     }
 
     private fun setData(chart: PieChart, count: Int, range: Float) {
         val entries: ArrayList<PieEntry> = ArrayList()
 
-        // NOTE: The order of the entries when being added to the entries array determines their position around the center of
-        // the chart.
-        for (i in 0 until count) {
-            entries.add(
-                PieEntry(
-                    (Math.random() * range + range / 5).toFloat(),
-                    parties[i % parties.size]
-                )
+        entries.add(
+            PieEntry(
+                1F,
+                "Test",
+                ContextCompat.getColor(this, R.color.dove_gray)
             )
-        }
+        )
+
+        entries.add(
+            PieEntry(
+                2F,
+                "Test",
+                ContextCompat.getColor(this, R.color.tory_blue)
+            )
+        )
+
         val dataSet = PieDataSet(entries, "Election Results")
         dataSet.setDrawIcons(false)
         dataSet.sliceSpace = 3f
         dataSet.iconsOffset = MPPointF(0F, 40F)
         dataSet.selectionShift = 5f
-
-        // add a lot of colors
-        val colors = ArrayList<Int>()
-        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
-        for (c in ColorTemplate.JOYFUL_COLORS) colors.add(c)
-        for (c in ColorTemplate.COLORFUL_COLORS) colors.add(c)
-        for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
-        for (c in ColorTemplate.PASTEL_COLORS) colors.add(c)
-        colors.add(ColorTemplate.getHoloBlue())
-        dataSet.colors = colors
 
         //dataSet.setSelectionShift(0f);
         dataSet.valueLinePart1OffsetPercentage = 80f

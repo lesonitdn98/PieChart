@@ -12,39 +12,13 @@ public class PieEntry extends Entry {
 
     private String label;
 
-    public PieEntry(float value) {
-        super(0f, value);
-    }
-
-    public PieEntry(float value, Object data) {
-        super(0f, value, data);
-    }
-
-    public PieEntry(float value, Drawable icon) {
-        super(0f, value, icon);
-    }
-
-    public PieEntry(float value, Drawable icon, Object data) {
-        super(0f, value, icon, data);
-    }
-
     public PieEntry(float value, String label) {
         super(0f, value);
         this.label = label;
     }
 
-    public PieEntry(float value, String label, Object data) {
-        super(0f, value, data);
-        this.label = label;
-    }
-
-    public PieEntry(float value, String label, Drawable icon) {
-        super(0f, value, icon);
-        this.label = label;
-    }
-
-    public PieEntry(float value, String label, Drawable icon, Object data) {
-        super(0f, value, icon, data);
+    public PieEntry(float value, String label, int color) {
+        super(0f, value, color);
         this.label = label;
     }
 
@@ -80,7 +54,6 @@ public class PieEntry extends Entry {
     }
 
     public PieEntry copy() {
-        PieEntry e = new PieEntry(getY(), label, getData());
-        return e;
+        return new PieEntry(getY(), label, getColor());
     }
 }

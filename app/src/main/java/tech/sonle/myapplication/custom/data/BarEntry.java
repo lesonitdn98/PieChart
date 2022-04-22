@@ -48,33 +48,10 @@ public class BarEntry extends Entry {
      *
      * @param x
      * @param y
-     * @param data - Spot for additional data this Entry represents.
-     */
-    public BarEntry(float x, float y, Object data) {
-        super(x, y, data);
-    }
-
-    /**
-     * Constructor for normal bars (not stacked).
-     *
-     * @param x
-     * @param y
      * @param icon - icon image
      */
     public BarEntry(float x, float y, Drawable icon) {
         super(x, y, icon);
-    }
-
-    /**
-     * Constructor for normal bars (not stacked).
-     *
-     * @param x
-     * @param y
-     * @param icon - icon image
-     * @param data - Spot for additional data this Entry represents.
-     */
-    public BarEntry(float x, float y, Drawable icon, Object data) {
-        super(x, y, icon, data);
     }
 
     /**
@@ -96,21 +73,6 @@ public class BarEntry extends Entry {
      *
      * @param x
      * @param vals - the stack values, use at least 2
-     * @param data - Spot for additional data this Entry represents.
-     */
-    public BarEntry(float x, float[] vals, Object data) {
-        super(x, calcSum(vals), data);
-
-        this.mYVals = vals;
-        calcPosNegSum();
-        calcRanges();
-    }
-
-    /**
-     * Constructor for stacked bar entries. One data object for whole stack
-     *
-     * @param x
-     * @param vals - the stack values, use at least 2
      * @param icon - icon image
      */
     public BarEntry(float x, float[] vals, Drawable icon) {
@@ -119,32 +81,6 @@ public class BarEntry extends Entry {
         this.mYVals = vals;
         calcPosNegSum();
         calcRanges();
-    }
-
-    /**
-     * Constructor for stacked bar entries. One data object for whole stack
-     *
-     * @param x
-     * @param vals - the stack values, use at least 2
-     * @param icon - icon image
-     * @param data - Spot for additional data this Entry represents.
-     */
-    public BarEntry(float x, float[] vals, Drawable icon, Object data) {
-        super(x, calcSum(vals), icon, data);
-
-        this.mYVals = vals;
-        calcPosNegSum();
-        calcRanges();
-    }
-
-    /**
-     * Returns an exact copy of the BarEntry.
-     */
-    public BarEntry copy() {
-
-        BarEntry copied = new BarEntry(getX(), getY(), getData());
-        copied.setVals(mYVals);
-        return copied;
     }
 
     /**

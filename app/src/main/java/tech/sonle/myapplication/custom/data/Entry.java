@@ -11,10 +11,8 @@ import tech.sonle.myapplication.custom.utils.Utils;
 /**
  * Class representing one entry in the chart. Might contain multiple values.
  * Might only contain a single value depending on the used constructor.
- *
- * @author Philipp Jahoda
  */
-public class Entry extends BaseEntry implements Parcelable {
+public class Entry extends BaseEntry {
 
     /**
      * the x value
@@ -41,10 +39,10 @@ public class Entry extends BaseEntry implements Parcelable {
      *
      * @param x    the x value
      * @param y    the y value (the actual value of the entry)
-     * @param data Spot for additional data this Entry represents.
+     * @param color Color.
      */
-    public Entry(float x, float y, Object data) {
-        super(y, data);
+    public Entry(float x, float y, int color) {
+        super(y, color);
         this.x = x;
     }
 
@@ -57,19 +55,6 @@ public class Entry extends BaseEntry implements Parcelable {
      */
     public Entry(float x, float y, Drawable icon) {
         super(y, icon);
-        this.x = x;
-    }
-
-    /**
-     * A Entry represents one single entry in the chart.
-     *
-     * @param x    the x value
-     * @param y    the y value (the actual value of the entry)
-     * @param icon icon image
-     * @param data Spot for additional data this Entry represents.
-     */
-    public Entry(float x, float y, Drawable icon, Object data) {
-        super(y, icon, data);
         this.x = x;
     }
 
@@ -97,8 +82,7 @@ public class Entry extends BaseEntry implements Parcelable {
      * @return
      */
     public Entry copy() {
-        Entry e = new Entry(x, getY(), getData());
-        return e;
+        return new Entry(x, getY(), getColor());
     }
 
     /**
@@ -114,7 +98,7 @@ public class Entry extends BaseEntry implements Parcelable {
         if (e == null)
             return false;
 
-        if (e.getData() != this.getData())
+        if (e.getColor() != this.getColor())
             return false;
 
         if (Math.abs(e.x - this.x) > Utils.Companion.getFLOAT_EPSILON())
@@ -133,43 +117,4 @@ public class Entry extends BaseEntry implements Parcelable {
     public String toString() {
         return "Entry, x: " + x + " y: " + getY();
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeFloat(this.x);
-        dest.writeFloat(this.getY());
-        if (getData() != null) {
-            if (getData() instanceof Parcelable) {
-                dest.writeInt(1);
-                dest.writeParcelable((Parcelable) this.getData(), flags);
-            } else {
-                throw new ParcelFormatException("Cannot parcel an Entry with non-parcelable data");
-            }
-        } else {
-            dest.writeInt(0);
-        }
-    }
-
-    protected Entry(Parcel in) {
-        this.x = in.readFloat();
-        this.setY(in.readFloat());
-        if (in.readInt() == 1) {
-            this.setData(in.readParcelable(Object.class.getClassLoader()));
-        }
-    }
-
-    public static final Creator<Entry> CREATOR = new Creator<Entry>() {
-        public Entry createFromParcel(Parcel source) {
-            return new Entry(source);
-        }
-
-        public Entry[] newArray(int size) {
-            return new Entry[size];
-        }
-    };
 }

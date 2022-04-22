@@ -259,7 +259,7 @@ public class PieChartRenderer extends DataRenderer {
 
             final boolean accountForSliceSpacing = sliceSpace > 0.f && sliceAngle <= 180.f;
 
-            getMRenderPaint().setColor(dataSet.getColor(j));
+            getMRenderPaint().setColor(e.getColor());
 
             final float sliceSpaceAngleOuter = visibleAngleCount == 1 ?
                     0.f :
@@ -462,9 +462,6 @@ public class PieChartRenderer extends DataRenderer {
 
             int entryCount = dataSet.getEntryCount();
 
-            boolean isUseValueColorForLineEnabled = dataSet.isUseValueColorForLineEnabled();
-            int valueLineColor = dataSet.getValueLineColor();
-
             mValueLinePaint.setStrokeWidth(Utils.Companion.convertDpToPixel(dataSet.getValueLineWidth()));
 
             final float sliceSpace = getSliceSpace(dataSet);
@@ -560,12 +557,7 @@ public class PieChartRenderer extends DataRenderer {
                         }
                         labelPty = pt2y;
 
-                        int lineColor = ColorTemplate.COLOR_NONE;
-
-                        if (isUseValueColorForLineEnabled)
-                            lineColor = dataSet.getColor(j);
-                        else if (valueLineColor != ColorTemplate.COLOR_NONE)
-                            lineColor = valueLineColor;
+                        int lineColor = entry.getColor();
 
                         if (lineColor != ColorTemplate.COLOR_NONE) {
                             mValueLinePaint.setColor(lineColor);
@@ -782,7 +774,7 @@ public class PieChartRenderer extends DataRenderer {
             Integer highlightColor = set.getHighlightColor();
             if (highlightColor == null)
                 highlightColor = set.getColor(index);
-            getMRenderPaint().setColor(highlightColor);
+//            getMRenderPaint().setColor(highlightColor);
 
             final float sliceSpaceAngleOuter = visibleAngleCount == 1 ?
                     0.f :

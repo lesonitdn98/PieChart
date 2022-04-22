@@ -2,6 +2,8 @@ package tech.sonle.myapplication.custom.data;
 
 import android.graphics.drawable.Drawable;
 
+import tech.sonle.myapplication.custom.utils.ColorTemplate;
+
 /**
  * Created by Philipp Jahoda on 02/06/16.
  */
@@ -10,11 +12,11 @@ public abstract class BaseEntry {
     /** the y value */
     private float y = 0f;
 
-    /** optional spot for additional data this Entry represents */
-    private Object mData = null;
-
     /** optional icon image */
     private Drawable mIcon = null;
+
+    /** optional color */
+    private int mColor = ColorTemplate.COLOR_NONE;
 
     public BaseEntry() {
 
@@ -24,20 +26,14 @@ public abstract class BaseEntry {
         this.y = y;
     }
 
-    public BaseEntry(float y, Object data) {
+    public BaseEntry(float y, int color) {
         this(y);
-        this.mData = data;
+        this.mColor = color;
     }
 
     public BaseEntry(float y, Drawable icon) {
         this(y);
         this.mIcon = icon;
-    }
-
-    public BaseEntry(float y, Drawable icon, Object data) {
-        this(y);
-        this.mIcon = icon;
-        this.mData = data;
     }
 
     /**
@@ -76,22 +72,5 @@ public abstract class BaseEntry {
         this.y = y;
     }
 
-    /**
-     * Returns the data, additional information that this Entry represents, or
-     * null, if no data has been specified.
-     *
-     * @return
-     */
-    public Object getData() {
-        return mData;
-    }
-
-    /**
-     * Sets additional data this Entry should represent.
-     *
-     * @param data
-     */
-    public void setData(Object data) {
-        this.mData = data;
-    }
+    public int getColor() { return mColor; }
 }
