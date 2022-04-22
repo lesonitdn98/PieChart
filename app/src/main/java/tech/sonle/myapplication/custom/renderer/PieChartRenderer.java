@@ -587,7 +587,9 @@ public class PieChartRenderer extends DataRenderer {
                                         pt0y,
                                         dataSet.getValueTextColor(j),
                                         mChart.labelShadowColor,
-                                        center
+                                        center,
+                                        mChart.labelFont,
+                                        mChart.valueFont
                                 );
                             } else {
                                 drawValue(c,

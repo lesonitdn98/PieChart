@@ -44,6 +44,8 @@ abstract class DataRenderer(
      */
     protected var mValuePaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
+    protected var mLabelPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
     companion object {
         const val STROKE_WIDTH = 16F
     }
@@ -56,6 +58,9 @@ abstract class DataRenderer(
         mValuePaint.color = Color.rgb(63, 63, 63)
         mValuePaint.textAlign = Align.CENTER
         mValuePaint.textSize = Utils.convertDpToPixel(14f)
+        mLabelPaint.color = Color.rgb(63, 63, 63)
+        mLabelPaint.textAlign = Align.CENTER
+        mLabelPaint.textSize = Utils.convertDpToPixel(14f)
         mHighlightPaint = Paint(Paint.ANTI_ALIAS_FLAG)
         mHighlightPaint!!.style = Paint.Style.STROKE
         mHighlightPaint!!.strokeWidth = 2f
@@ -193,10 +198,23 @@ abstract class DataRenderer(
         y: Float,
         color: Int,
         shadowColor: Int?,
-        center: MPPointF
+        center: MPPointF,
+        labelFont: Typeface?,
+        valueFont: Typeface?
     ) {
-        val textContent =
-            "$label: ${formatter.getFormattedValue(value, entry, dataSetIndex, mViewPortHandler)}%"
+        mValuePaint.color = color
+        mValuePaint.typeface = valueFont
+        mLabelPaint.color = color
+        mLabelPaint.typeface = labelFont
+
+        val valueText = "${
+            formatter.getFormattedValue(
+                value,
+                entry,
+                dataSetIndex,
+                mViewPortHandler
+            )
+        }%"
 
         val bgPaint = Paint()
         bgPaint.color = Color.WHITE
@@ -205,7 +223,7 @@ abstract class DataRenderer(
         }
 
         val lineHeight = mValuePaint.textSize + 2 * STROKE_WIDTH
-        val textWidth = mValuePaint.measureText(textContent)
+        val textWidth = mValuePaint.measureText(valueText) + mLabelPaint.measureText("$label ")
 
         var left = if (x < center.x) x - STROKE_WIDTH - textWidth else x - STROKE_WIDTH
         var right = if (x < center.x) x + STROKE_WIDTH else x + STROKE_WIDTH + textWidth
@@ -239,8 +257,26 @@ abstract class DataRenderer(
             bgPaint
         )
 
-        mValuePaint.color = color
-        c.drawText(textContent, newX, y, mValuePaint)
+        val valueTextWidth = mValuePaint.measureText(valueText)
+        val labelTextWidth = mLabelPaint.measureText("$label ")
+
+        if (x < center.x) {
+            c.drawText(
+                valueText,
+                newX,
+                y,
+                mValuePaint
+            )
+        } else {
+            c.drawText(
+                valueText,
+                right - valueTextWidth - STROKE_WIDTH,
+                y,
+                mValuePaint
+            )
+        }
+
+        c.drawText("$label ", left + labelTextWidth / 2 + STROKE_WIDTH, y, mLabelPaint)
     }
 
     private fun getPathOfRoundedRectF(

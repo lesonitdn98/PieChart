@@ -24,6 +24,9 @@ import tech.sonle.myapplication.custom.utils.Utils;
  */
 public class PieChart extends PieRadarChartBase<PieData> {
 
+    public Typeface labelFont = null;
+    public Typeface valueFont = null;
+
     /**
      * rect object that represents the bounds of the piechart, needed for
      * drawing the circle
