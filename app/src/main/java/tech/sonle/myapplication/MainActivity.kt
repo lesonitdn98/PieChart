@@ -78,13 +78,8 @@ class MainActivity : AppCompatActivity(), OnChartValueSelectedListener {
         val dataSet = PieDataSet(entries, "Election Results")
         dataSet.setDrawIcons(false)
         dataSet.sliceSpace = 3f
-        dataSet.iconsOffset = MPPointF(0F, 40F)
         dataSet.selectionShift = 5f
 
-        //dataSet.setSelectionShift(0f);
-        dataSet.valueLinePart1OffsetPercentage = 80f
-        dataSet.valueLinePart1Length = 0.2f
-        dataSet.valueLinePart2Length = 0.4f
         //dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
         dataSet.yValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
         dataSet.xValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
