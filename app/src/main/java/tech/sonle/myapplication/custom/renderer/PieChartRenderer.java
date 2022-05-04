@@ -260,6 +260,8 @@ public class PieChartRenderer extends DataRenderer {
             final boolean accountForSliceSpacing = sliceSpace > 0.f && sliceAngle <= 180.f;
 
             getMRenderPaint().setColor(e.getColor());
+            if (!mChart.getHighlighted().isEmpty())
+                getMRenderPaint().setAlpha(70);
 
             final float sliceSpaceAngleOuter = visibleAngleCount == 1 ?
                     0.f :
@@ -667,7 +669,6 @@ public class PieChartRenderer extends DataRenderer {
     protected void drawHole(Canvas c) {
 
         if (mChart.isDrawHoleEnabled() && mBitmapCanvas != null) {
-
             float radius = mChart.getRadius();
             float holeRadius = radius * (mChart.getHoleRadius() / 100);
             MPPointF center = mChart.getCenterCircleBox();

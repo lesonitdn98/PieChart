@@ -76,6 +76,8 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      */
     protected T mData = null;
 
+    protected boolean singleHighlight = true;
+
     /**
      * Flag that indicates if highlighting per tap (touch) is enabled
      */
@@ -593,18 +595,23 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
                 mIndicesToHighlight.clear();
                 high = null;
             } else {
-                List<Highlight> indicesToHighlightUpdate = new ArrayList();
-                boolean isRemove = false;
-                // set the indices to highlight
-                for (Highlight h : mIndicesToHighlight) {
-                    if (!high.equalTo(h))
-                        indicesToHighlightUpdate.add(h);
-                    else isRemove = true;
-                }
+                if (singleHighlight) {
+                    mIndicesToHighlight.clear();
+                    mIndicesToHighlight.add(high);
+                } else {
+                    List<Highlight> indicesToHighlightUpdate = new ArrayList();
+                    boolean isRemove = false;
+                    // set the indices to highlight
+                    for (Highlight h : mIndicesToHighlight) {
+                        if (!high.equalTo(h))
+                            indicesToHighlightUpdate.add(h);
+                        else isRemove = true;
+                    }
 
-                if (isRemove)
-                    mIndicesToHighlight = indicesToHighlightUpdate;
-                else mIndicesToHighlight.add(high);
+                    if (isRemove)
+                        mIndicesToHighlight = indicesToHighlightUpdate;
+                    else mIndicesToHighlight.add(high);
+                }
             }
         }
 
